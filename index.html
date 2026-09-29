@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Terminal Widget Demos</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: white;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { 
+            text-align: center; 
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .subtitle { 
+            text-align: center; 
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+        .cards { display: grid; gap: 20px; }
+        .card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 25px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .card h2 { 
+            margin-top: 0; 
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card p { 
+            margin: 10px 0; 
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        .tags { margin: 15px 0; }
+        .tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin: 2px;
+        }
+        a.button {
+            display: inline-block;
+            background: white;
+            color: #764ba2;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: transform 0.2s;
+        }
+        a.button:hover { transform: scale(1.05); }
+        .comparison {
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 40px;
+        }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.2); }
+        th { background: rgba(255,255,255,0.1); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖥️ Interactive Terminal Widgets</h1>
+        <p class="subtitle">Live demos of different terminal emulator libraries</p>
+        
+        <div class="cards">
+            <div class="card">
+                <h2>🖥️ xterm.js</h2>
+                <p><strong>The Industry Standard</strong> — Used by VS Code, GitHub Codespaces, and Gitpod. Full VT100 terminal emulation with support for complex applications like vim and tmux.</p>
+                <div class="tags">
+                    <span class="tag">Full Terminal</span>
+                    <span class="tag">VT100 Support</span>
+                    <span class="tag">~150KB</span>
+                    <span class="tag">Production Ready</span>
+                </div>
+                <a href="xterm.html" class="button">Try xterm.js →</a>
+            </div>
+            
+            <div class="card">
+                <h2>⚡ jQuery Terminal</h2>
+                <p><strong>Simple CLI Widget</strong> — Perfect for building command-line interfaces that call APIs. Built-in features like auto-complete, history, and JSON-RPC support.</p>
+                <div class="tags">
+                    <span class="tag">CLI Interface</span>
+                    <span class="tag">Auto-complete</span>
+                    <span class="tag">~40KB</span>
+                    <span class="tag">jQuery Plugin</span>
+                </div>
+                <a href="jquery.html" class="button">Try jQuery Terminal →</a>
+            </div>
+            
+            <div class="card">
+                <h2>🎨 Termino.js</h2>
+                <p><strong>Lightweight & Modern</strong> — Zero dependencies, pure JavaScript. Great for terminal animations, games, and simple CLI interfaces.</p>
+                <div class="tags">
+                    <span class="tag">Zero Dependencies</span>
+                    <span class="tag">~20KB</span>
+                    <span class="tag">Animations</span>
+                    <span class="tag">Accessible</span>
+                </div>
+                <a href="termino.html" class="button">Try Termino.js →</a>
+            </div>
+            
+            <div class="card">
+                <h2>🎯 wterm</h2>
+                <p><strong>Modern DOM-Based</strong> — By Vercel. Renders to DOM for native text selection, copy/paste, find, and accessibility. Has React/Vue/Svelte bindings.</p>
+                <div class="tags">
+                    <span class="tag">DOM Rendering</span>
+                    <span class="tag">Accessible</span>
+                    <span class="tag">~50KB</span>
+                    <span class="tag">Framework Bindings</span>
+                </div>
+                <a href="wterm.html" class="button">Try wterm →</a>
+            </div>
+        </div>
+        
+        <div class="comparison">
+            <h2>📊 Quick Comparison</h2>
+            <table>
+                <tr>
+                    <th>Library</th>
+                    <th>Best For</th>
+                    <th>Size</th>
+                    <th>Complexity</th>
+                </tr>
+                <tr>
+                    <td>xterm.js</td>
+                    <td>Full shells (SSH, bash)</td>
+                    <td>~150KB</td>
+                    <td>Medium</td>
+                </tr>
+                <tr>
+                    <td>jQuery Terminal</td>
+                    <td>Custom commands, APIs</td>
+                    <td>~40KB</td>
+                    <td>Easy</td>
+                </tr>
+                <tr>
+                    <td>Termino.js</td>
+                    <td>Simple widgets, games</td>
+                    <td>~20KB</td>
+                    <td>Easy</td>
+                </tr>
+                <tr>
+                    <td>wterm</td>
+                    <td>Modern web apps</td>
+                    <td>~50KB</td>
+                    <td>Easy</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
