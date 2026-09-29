@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>xterm.js Demo - Full Terminal Emulator</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css">
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0d1117; 
+            padding: 20px;
+            color: #c9d1d9;
+        }
+        .demo-header {
+            max-width: 800px;
+            margin: 0 auto 20px;
+        }
+        h1 { color: #58a6ff; margin-bottom: 5px; }
+        .subtitle { color: #8b949e; font-size: 14px; }
+        #terminal-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #1e1e1e;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+        #terminal { height: 400px; }
+        .info {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 15px;
+            background: #161b22;
+            border-radius: 8px;
+            border-left: 4px solid #58a6ff;
+        }
+        code { background: #0d1117; padding: 2px 6px; border-radius: 4px; }
+        .commands { color: #7ee787; }
+    </style>
+</head>
+<body>
+    <div class="demo-header">
+        <h1>🖥️ xterm.js Demo</h1>
+        <p class="subtitle">Full terminal emulator with VT100 support (used by VS Code)</p>
+    </div>
+    
+    <div id="terminal-container">
+        <div id="terminal"></div>
+    </div>
+    
+    <div class="info">
+        <h3>Try these commands:</h3>
+        <ul>
+            <li><code class="commands">help</code> - Show available commands</li>
+            <li><code class="commands">ls</code> - List files</li>
+            <li><code class="commands">cat readme.txt</code> - Display file</li>
+            <li><code class="commands">whoami</code> - Show current user</li>
+            <li><code class="commands">date</code> - Show current date</li>
+            <li><code class="commands">clear</code> - Clear terminal</li>
+        </ul>
+        <p><strong>Features:</strong> Real terminal emulation, colors, cursor control, full keyboard support</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/lib/xterm.min.js"></script>
+    <script>
+        const term = new Terminal({
+            cursorBlink: true,
+            fontSize: 14,
+            fontFamily: '"Cascadia Code", "Fira Code", Menlo, monospace',
+            theme: {
+                background: '#1e1e1e',
+                foreground: '#d4d4d4',
+                cursor: '#d4d4d4',
+                selection: 'rgba(255, 255, 255, 0.3)'
+            }
+        });
+        
+        term.open(document.getElementById('terminal'));
+        
+        const files = {
+            'readme.txt': 'Welcome to Francis Construction Group!\n\nProjects: 47\nActive Sites: 12\nEmployees: 156',
+            'projects.log': 'Groupe DR Électrique: Phase 2 Complete\nGroupe Sip: In Progress\nDivision BR: Planning',
+            'config.json': '{"api_key": "***", "server": "prod"}'
+        };
+        
+        let currentDir = '~';
+        let commandHistory = [];
+        let historyIndex = -1;
+        
+        function writePrompt() {
+            term.write(`\r\n\x1b[32mfrancis@construction\x1b[0m:\x1b[34m${currentDir}\x1b[0m$ `);
+        }
+        
+        function processCommand(cmd) {
+            const parts = cmd.trim().split(' ');
+            const command = parts[0];
+            const args = parts.slice(1);
+            
+            switch(command) {
+                case 'help':
+                    term.writeln('\r\nAvailable commands:');
+                    term.writeln('  \x1b[33mhelp\x1b[0m      - Show this message');
+                    term.writeln('  \x1b[33mls\x1b[0m        - List files');
+                    term.writeln('  \x1b[33mcat\x1b[0m       - Display file contents');
+                    term.writeln('  \x1b[33mwhoami\x1b[0m    - Show current user');
+                    term.writeln('  \x1b[33mdate\x1b[0m      - Show current date/time');
+                    term.writeln('  \x1b[33mecho\x1b[0m      - Echo text');
+                    term.writeln('  \x1b[33mclear\x1b[0m     - Clear screen');
+                    break;
+                case 'ls':
+                    term.writeln('\r\n\x1b[34mreadme.txt\x1b[0m  \x1b[34mprojects.log\x1b[0m  \x1b[34mconfig.json\x1b[0m');
+                    break;
+                case 'cat':
+                    if (args[0] && files[args[0]]) {
+                        term.writeln('\r\n' + files[args[0]].replace(/\n/g, '\r\n'));
+                    } else {
+                        term.writeln(`\r\ncat: ${args[0] || ''}: No such file`);
+                    }
+                    break;
+                case 'whoami':
+                    term.writeln('\r\nfrancis');
+                    break;
+                case 'date':
+                    term.writeln('\r\n' + new Date().toString());
+                    break;
+                case 'echo':
+                    term.writeln('\r\n' + args.join(' '));
+                    break;
+                case 'clear':
+                    term.clear();
+                    break;
+                case '':
+                    break;
+                default:
+                    term.writeln(`\r\n${command}: command not found`);
+            }
+            return true;
+        }
+        
+        term.writeln('\x1b[1m\x1b[36m╔══════════════════════════════════════╗');
+        term.writeln('║   xterm.js Terminal Emulator Demo    ║');
+        term.writeln('╚══════════════════════════════════════╝\x1b[0m');
+        term.writeln('Type "help" for available commands.\r\n');
+        writePrompt();
+        
+        let currentLine = '';
+        
+        term.onData(data => {
+            if (data === '\r') {
+                term.write('\r\n');
+                if (currentLine.trim()) {
+                    commandHistory.unshift(currentLine);
+                    if (commandHistory.length > 50) commandHistory.pop();
+                    historyIndex = -1;
+                    processCommand(currentLine);
+                }
+                currentLine = '';
+                writePrompt();
+            } else if (data === '\x7f') {
+                if (currentLine.length > 0) {
+                    currentLine = currentLine.slice(0, -1);
+                    term.write('\b \b');
+                }
+            } else if (data === '\x1b[A') {
+                if (historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                    term.write('\r' + ' '.repeat(currentLine.length + currentDir.length + 30) + '\r');
+                    writePrompt();
+                    currentLine = commandHistory[historyIndex];
+                    term.write(currentLine);
+                }
+            } else if (data === '\x1b[B') {
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    term.write('\r' + ' '.repeat(currentLine.length + currentDir.length + 30) + '\r');
+                    writePrompt();
+                    currentLine = commandHistory[historyIndex];
+                    term.write(currentLine);
+                } else if (historyIndex === 0) {
+                    historyIndex = -1;
+                    term.write('\r' + ' '.repeat(currentLine.length + currentDir.length + 30) + '\r');
+                    writePrompt();
+                    currentLine = '';
+                }
+            } else if (data >= ' ') {
+                currentLine += data;
+                term.write(data);
+            }
+        });
+        
+        term.focus();
+    </script>
+</body>
+</html>
