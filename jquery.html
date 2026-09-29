@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>jQuery Terminal Demo - Command Line Interface</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a2e; 
+            padding: 20px;
+            color: #eee;
+        }
+        .demo-header {
+            max-width: 800px;
+            margin: 0 auto 20px;
+        }
+        h1 { color: #e94560; margin-bottom: 5px; }
+        .subtitle { color: #a8a8a8; font-size: 14px; }
+        #term-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #16213e;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+        .info {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 15px;
+            background: #16213e;
+            border-radius: 8px;
+            border-left: 4px solid #e94560;
+        }
+        code { background: #0f3460; padding: 2px 6px; border-radius: 4px; color: #00d9ff; }
+        .commands { color: #ff6b9d; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/jquery.terminal/css/jquery.terminal.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/jquery.terminal/js/jquery.terminal.min.js"></script>
+</head>
+<body>
+    <div class="demo-header">
+        <h1>⚡ jQuery Terminal Demo</h1>
+        <p class="subtitle">Simple CLI widget for building command interfaces</p>
+    </div>
+    
+    <div id="term-container">
+        <div id="term"></div>
+    </div>
+    
+    <div class="info">
+        <h3>Try these commands:</h3>
+        <ul>
+            <li><code class="commands">hello Francis</code> - Personalized greeting</li>
+            <li><code class="commands">calculate 15 + 27</code> - Math operations</li>
+            <li><code class="commands">status</code> - Check project status</li>
+            <li><code class="commands">projects</code> - List all projects</li>
+            <li><code class="commands">quote</code> - Random quote</li>
+            <li><code class="commands">help</code> - Show all commands</li>
+        </ul>
+        <p><strong>Features:</strong> Auto-complete, command history, syntax highlighting, built-in help</p>
+    </div>
+
+    <script>
+        const quotes = [
+            '"The best way to predict the future is to create it." - Peter Drucker',
+            '"Quality is not an act, it is a habit." - Aristotle',
+            '"Construction is the art of making a meaningful whole out of parts."',
+            '"The function of leadership is to produce more leaders." - Ralph Nader'
+        ];
+        
+        const projects = [
+            { name: 'Groupe DR Électrique', status: 'Active', progress: 67 },
+            { name: 'Groupe Sip', status: 'Planning', progress: 15 },
+            { name: 'Division BR Électrique', status: 'Complete', progress: 100 },
+            { name: 'Elecktritek', status: 'Active', progress: 43 }
+        ];
+        
+        $('#term').terminal({
+            hello: function(name) {
+                this.echo(`Hello, [[;#00d9ff;]${name}]! Welcome to the construction portal.`);
+            },
+            calculate: function(...args) {
+                try {
+                    const expr = args.join(' ');
+                    const result = eval(expr);
+                    this.echo(`Result: [[;#00ff88;]${result}]`);
+                } catch(e) {
+                    this.echo('[[;#ff4444;]Error: Invalid expression]');
+                }
+            },
+            status: function() {
+                this.echo('\n=== System Status ===');
+                this.echo(`Uptime: [[;#00ff88;]99.9%]`);
+                this.echo(`Active Projects: [[;#00d9ff;]${projects.filter(p => p.status === 'Active').length}]`);
+                this.echo(`Server Load: [[;#ffaa00;]Normal]`);
+                this.echo('');
+            },
+            projects: function() {
+                this.echo('\n=== Active Projects ===');
+                projects.forEach(p => {
+                    const color = p.status === 'Complete' ? '#00ff88' : 
+                                  p.status === 'Active' ? '#00d9ff' : '#ffaa00';
+                    this.echo(`  ${p.name}: [[;${color};]${p.status}] (${p.progress}% complete)`);
+                });
+                this.echo('');
+            },
+            quote: function() {
+                const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+                this.echo(`\n${randomQuote}\n`);
+            },
+            time: function() {
+                this.echo(new Date().toLocaleString());
+            },
+            clear: function() {
+                this.clear();
+            }
+        }, {
+            greetings: '╔══════════════════════════════════════╗\n' +
+                      '║   jQuery Terminal Widget Demo        ║\n' +
+                      '╚══════════════════════════════════════╝\n\n' +
+                      'Type [[;#e94560;]help] to see available commands.\n',
+            prompt: '[[;#e94560;]francis@cli:~$ ]',
+            completion: true,
+            checkArity: false
+        });
+    </script>
+</body>
+</html>
