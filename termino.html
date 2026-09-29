@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Termino.js Demo - Lightweight Terminal Widget</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f23; 
+            padding: 20px;
+            color: #cccccc;
+        }
+        .demo-header {
+            max-width: 800px;
+            margin: 0 auto 20px;
+        }
+        h1 { color: #ffa500; margin-bottom: 5px; }
+        .subtitle { color: #999; font-size: 14px; }
+        #terminal-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+        #terminal {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            height: 400px;
+            overflow-y: auto;
+        }
+        .info {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 15px;
+            background: #1a1a1a;
+            border-radius: 8px;
+            border-left: 4px solid #ffa500;
+        }
+        code { background: #0f0f23; padding: 2px 6px; border-radius: 4px; color: #ffa500; }
+        .commands { color: #ffcc66; }
+        .termino-output { white-space: pre-wrap; }
+        .termino-line { display: block; }
+        .termino-input-line { display: flex; }
+        .termino-prompt { color: #ffa500; margin-right: 5px; }
+        .termino-input { 
+            background: transparent; 
+            border: none; 
+            color: #fff; 
+            outline: none;
+            font-family: inherit;
+            font-size: inherit;
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-header">
+        <h1>🎨 Termino.js Demo</h1>
+        <p class="subtitle">Lightweight terminal widget (zero dependencies, ~20KB)</p>
+    </div>
+    
+    <div id="terminal-container">
+        <div id="terminal"></div>
+    </div>
+    
+    <div class="info">
+        <h3>Try these commands:</h3>
+        <ul>
+            <li><code class="commands">banner</code> - Show ASCII art</li>
+            <li><code class="commands">matrix</code> - Matrix rain effect</li>
+            <li><code class="commands">joke</code> - Random joke</li>
+            <li><code class="commands">countdown</code> - Animated countdown</li>
+            <li><code class="commands">weather</code> - Fake weather report</li>
+            <li><code class="commands">help</code> - Show all commands</li>
+        </ul>
+        <p><strong>Features:</strong> Tiny footprint, animations, emoji support, accessible</p>
+    </div>
+
+    <script>
+        class SimpleTerminal {
+            constructor(element) {
+                this.element = element;
+                this.output = document.createElement('div');
+                this.output.className = 'termino-output';
+                this.element.appendChild(this.output);
+                this.createInputLine();
+            }
+            
+            createInputLine() {
+                this.inputLine = document.createElement('div');
+                this.inputLine.className = 'termino-input-line';
+                this.prompt = document.createElement('span');
+                this.prompt.className = 'termino-prompt';
+                this.prompt.textContent = '⚡ ';
+                this.input = document.createElement('input');
+                this.input.className = 'termino-input';
+                this.input.type = 'text';
+                this.input.placeholder = 'Type a command...';
+                this.inputLine.appendChild(this.prompt);
+                this.inputLine.appendChild(this.input);
+                this.element.appendChild(this.inputLine);
+                
+                this.input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        const cmd = this.input.value.trim();
+                        this.write('⚡ ' + cmd);
+                        this.input.value = '';
+                        this.processCommand(cmd);
+                    }
+                });
+                
+                this.input.focus();
+            }
+            
+            write(text) {
+                const line = document.createElement('span');
+                line.className = 'termino-line';
+                line.textContent = text;
+                this.output.appendChild(line);
+                this.element.scrollTop = this.element.scrollHeight;
+            }
+            
+            writeln(text) {
+                this.write(text);
+                this.output.appendChild(document.createElement('br'));
+            }
+            
+            processCommand(cmd) {
+                switch(cmd.toLowerCase()) {
+                    case 'banner':
+                        this.writeln('');
+                        this.writeln('██████╗  ██████╗ ███╗   ██╗██╗   ██╗██╗');
+                        this.writeln('██╔══██╗██╔═══██╗████╗  ██║██║   ██║██║');
+                        this.writeln('██║  ██║██║   ██║██╔██╗ ██║██║   ██║██║');
+                        this.writeln('██║  ██║██║   ██║██║╚██╗██║██║   ██║██║');
+                        this.writeln('██████╔╝╚██████╔╝██║ ╚████║╚██████╔╝██║');
+                        this.writeln('╚═════╝  ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚═╝');
+                        this.writeln('Construction Management System');
+                        this.writeln('');
+                        break;
+                    case 'matrix':
+                        this.writeln('');
+                        this.writeln('🌧️ Initiating Matrix sequence...');
+                        let count = 0;
+                        const interval = setInterval(() => {
+                            const chars = 'ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ01234567890';
+                            let line = '';
+                            for (let i = 0; i < 60; i++) {
+                                line += chars[Math.floor(Math.random() * chars.length)];
+                            }
+                            this.writeln(line);
+                            count++;
+                            if (count >= 5) clearInterval(interval);
+                        }, 200);
+                        break;
+                    case 'joke':
+                        const jokes = [
+                            'Why did the electrician break up with his girlfriend?\nBecause he didn\'t feel a spark! ⚡',
+                            'What did one wall say to the other?\nI\'ll meet you at the corner! 🏗️',
+                            'Why did the construction worker bring a ladder?\nTo reach new heights! 🪜'
+                        ];
+                        this.writeln('');
+                        this.writeln(jokes[Math.floor(Math.random() * jokes.length)]);
+                        this.writeln('');
+                        break;
+                    case 'countdown':
+                        this.writeln('');
+                        let num = 5;
+                        const countdown = setInterval(() => {
+                            if (num > 0) {
+                                this.writeln(`🚀 ${num}...`);
+                                num--;
+                            } else {
+                                this.writeln('🎉 LAUNCH!');
+                                clearInterval(countdown);
+                            }
+                        }, 1000);
+                        break;
+                    case 'weather':
+                        this.writeln('');
+                        this.writeln('🌤️  Weather Report - Montreal');
+                        this.writeln('Temperature: 22°C (72°F)');
+                        this.writeln('Conditions: Partly Cloudy');
+                        this.writeln('Wind: 15 km/h NW');
+                        this.writeln('Humidity: 65%');
+                        this.writeln('');
+                        break;
+                    case 'help':
+                        this.writeln('');
+                        this.writeln('Available commands:');
+                        this.writeln('  banner    - Show ASCII art');
+                        this.writeln('  matrix    - Matrix rain effect');
+                        this.writeln('  joke      - Random joke');
+                        this.writeln('  countdown - Animated countdown');
+                        this.writeln('  weather   - Weather report');
+                        this.writeln('  clear     - Clear terminal');
+                        this.writeln('  help      - Show this message');
+                        this.writeln('');
+                        break;
+                    case 'clear':
+                        this.output.innerHTML = '';
+                        break;
+                    case '':
+                        break;
+                    default:
+                        this.writeln(`Command not found: ${cmd}`);
+                        this.writeln('Type "help" for available commands.');
+                }
+            }
+        }
+        
+        const term = new SimpleTerminal(document.getElementById('terminal'));
+        term.writeln('╔══════════════════════════════════════╗');
+        term.writeln('║   Termino.js Lightweight Widget      ║');
+        term.writeln('╚══════════════════════════════════════╝');
+        term.writeln('');
+        term.writeln('Zero dependencies • Tiny • Accessible');
+        term.writeln('Type "help" for commands.');
+        term.writeln('');
+    </script>
+</body>
+</html>
